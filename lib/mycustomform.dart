@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:formforimage/homepage.dart';
+import 'package:phone_number/phone_number.dart';
 
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key}) : super(key: key);
@@ -23,6 +26,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
   }
 
   TextEditingController username = TextEditingController();
+  TextEditingController phone = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +74,19 @@ class _MyCustomFormState extends State<MyCustomForm> {
                 height: 16.0,
               ),
               TextFormField(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                controller: phone,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "mobile number is required";
+                  } else if (value.length != 10) {
+                    return "mobile number exact 10 digit";
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -77,7 +94,6 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   hintText: 'Mobile Number',
                   label: const Text('Mobile Number'),
                 ),
-                keyboardType: TextInputType.phone,
               ),
               const SizedBox(
                 height: 16.0,
@@ -99,10 +115,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
                   if (_cForm.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Processing Data')));
-                    // Navigator.of(context).pushAndRemoveUntil(
-                    //   MaterialPageRoute(builder: (_) => const HomePage()),
-                    //   (route) => false,
-
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const HomePage()),
+                      (route) => false,
+                    );
                   }
                 },
                 child: const Text(
