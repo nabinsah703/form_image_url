@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:formforimage/homepage.dart';
 import 'package:formforimage/mycustomform.dart';
 
 void main() {
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
         primaryColor: Colors.amber,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
         appBar: AppBar(

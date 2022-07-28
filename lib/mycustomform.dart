@@ -1,3 +1,5 @@
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formforimage/homepage.dart';
@@ -27,6 +29,8 @@ class _MyCustomFormState extends State<MyCustomForm> {
 
   TextEditingController username = TextEditingController();
   TextEditingController phone = TextEditingController();
+  Country _selectedDialogCountry =
+      CountryPickerUtils.getCountryByPhoneCode('977');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +76,19 @@ class _MyCustomFormState extends State<MyCustomForm> {
               ),
               const SizedBox(
                 height: 16.0,
+              ),
+              Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                        "CountryPickerDialog (has priorityList['TR,'US'])"),
+                    ListTile(
+                      onTap: _openCountryPickerDialog,
+                      title: _buildDialogItem(_selectedDialogCountry),
+                    ),
+                  ],
+                ),
               ),
               TextFormField(
                 keyboardType: TextInputType.number,
@@ -132,4 +149,34 @@ class _MyCustomFormState extends State<MyCustomForm> {
       ),
     );
   }
+
+  Widget _buildDialogItem(Country country) => Row(
+        children: <Widget>[
+          CountryPickerUtils.getDefaultFlagImage(country),
+          const SizedBox(width: 8.0),
+          Text("+${country.phoneCode}"),
+          const SizedBox(width: 8.0),
+          Flexible(child: Text(country.name))
+        ],
+      );
+  void _openCountryPickerDialog() => showDialog(
+        context: context,
+        builder: (context) => Theme(
+          data: Theme.of(context).copyWith(primaryColor: Colors.pink),
+          child: CountryPickerDialog(
+            titlePadding: const EdgeInsets.all(8.0),
+            searchCursorColor: Colors.pinkAccent,
+            searchInputDecoration: const InputDecoration(hintText: 'Search...'),
+            isSearchable: true,
+            title: const Text('Select your phone code'),
+            onValuePicked: (Country country) =>
+                setState(() => _selectedDialogCountry = country),
+            itemBuilder: _buildDialogItem,
+            priorityList: [
+              CountryPickerUtils.getCountryByIsoCode('Np'),
+              CountryPickerUtils.getCountryByIsoCode('NP'),
+            ],
+          ),
+        ),
+      );
 }
